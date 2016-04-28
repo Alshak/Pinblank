@@ -15,6 +15,8 @@ class PINBLANK_API AFlipper : public AFlipperActionable
 	FRotator flipperDestination;
 
 	float currentYaw;
+	// Small optimization
+	bool hasNewDestination = false;
 
 	const int BALL_IMPULSE = 1500;
 	const int CAPSULE_RADIUS = 25;

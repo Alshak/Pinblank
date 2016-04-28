@@ -37,6 +37,11 @@ void ADynamicCamera::Tick( float DeltaTime )
 	if (bBallHasLeft) {
 		FVector res = FMath::VInterpTo(this->GetActorLocation(), ballLastPosition, DeltaTime, 6);
 		this->SetActorLocation(res);
+		// We stop moving if we are in the right place
+		if (ballLastPosition.Equals(this->GetActorLocation(), 0.1))
+		{
+			bBallHasLeft = false;
+		}
 	}
 }
 
@@ -45,7 +50,7 @@ void ADynamicCamera::OnEndOverlap(class AActor* OtherActor, class UPrimitiveComp
 	ABall* ball = Cast<ABall>(OtherActor);
 	if (ball)
 	{
-		bBallHasLeft = true;
 		ballLastPosition = ball->GetActorLocation();
+		bBallHasLeft = true;
 	}
 }

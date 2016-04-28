@@ -53,13 +53,16 @@ void AFlipper::BeginPlay()
 void AFlipper::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	// Rotate to the top position
-	flipperMesh->SetWorldRotation(FMath::RInterpConstantTo(flipperMesh->GetComponentRotation(), flipperDestination, DeltaTime,rotationInterpSpeed));
 
-	// Return to bottom position if player stop holding interact button
-	if (!bIsInteracted)
+	// Rotate the flipper
+	if (hasNewDestination)
 	{
-		flipperDestination = FRotator(0, currentYaw, bottomAngle);
+		flipperMesh->SetWorldRotation(FMath::RInterpConstantTo(flipperMesh->GetComponentRotation(), flipperDestination, DeltaTime, rotationInterpSpeed));
+		// We stop moving if we are in the right place
+		if (flipperDestination.Equals(flipperMesh->GetComponentRotation(), 0.1))
+		{
+			hasNewDestination = false;
+		}
 	}
 }
 
@@ -67,12 +70,16 @@ void AFlipper::Interact(ABall* ball)
 {
 	// Set the top position as current destination
 	bIsInteracted = true;
+	hasNewDestination = true;
 	flipperDestination = FRotator(0, currentYaw, topAngle);
 }
 
 void AFlipper::StopInteract(ABall* ball)
 {
+	// Set the bottom position as current destination
 	bIsInteracted = false;
+	hasNewDestination = true;
+	flipperDestination = FRotator(0, currentYaw, bottomAngle);
 }
 
 UStaticMeshComponent* AFlipper::GetColoredMesh()
