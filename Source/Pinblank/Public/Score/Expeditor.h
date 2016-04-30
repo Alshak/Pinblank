@@ -3,25 +3,26 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "ColorChangeable.h"
 #include "Expeditor.generated.h"
 
 UCLASS()
-class PINBLANK_API AExpeditor : public AActor
+class PINBLANK_API AExpeditor : public AActor, public IColorChangeable
 {
 	GENERATED_BODY()
+
+		const int BALL_IMPULSE = 1000;
 	UParticleSystemComponent* particleSystem;
 	UMaterialInstanceDynamic* dynamicMaterialInstance;
 
-	const int BALL_IMPULSE = 1000;
-
-	void ChangeColor(FLinearColor color);
-	UStaticMeshComponent* GetColoredMesh();
-public:	
 	AExpeditor();
+	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
-	void BeginPlay() override;
-	void PostInitializeComponents() override;
-
+	// Color change impl
+	virtual UStaticMeshComponent* GetColoredMesh() override;
+	virtual const FName GetMaterialParameterColorName() const override;
+public:	
 	UFUNCTION()
 	void OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 	

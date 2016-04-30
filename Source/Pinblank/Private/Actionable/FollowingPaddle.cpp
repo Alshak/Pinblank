@@ -3,6 +3,3 @@
 #include "Pinblank.h"
 #include "FollowingPaddle.h"
 
-
-
-

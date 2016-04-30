@@ -10,25 +10,20 @@ class PINBLANK_API ABall : public APawn
 {
 	GENERATED_BODY()
 
-	virtual void FlipperAction();
-	virtual void FlipperStopAction();
-
+	bool bIsInteracted = false;
+	const int SPHERE_RADIUS = 32;
 	USphereComponent* sphereCollider;
 	UStaticMeshComponent* sphereMesh;
 
-	bool bIsInteracted;
-
-	const int SPHERE_RADIUS = 32;
-
-	UPhysicalMaterial* physMat;
-public:	
 	ABall();
-	
-	void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	void BeginPlay() override;
-	void Tick(float DeltaSeconds) override;
-	void PostInitializeComponents() override;
+	void FlipperAction();
+	void FlipperStopAction();
 
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void PostInitializeComponents() override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+public:
 	UFUNCTION()
 	UStaticMeshComponent* GetSphereMeshComponent();
 

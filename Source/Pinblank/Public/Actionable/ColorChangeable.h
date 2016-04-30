@@ -2,30 +2,26 @@
 
 #pragma once
 
-#include "GameFramework/Actor.h"
-#include "ColorChangeable.h"
-#include "FlipperActionable.h"
-#include "PushCylinder.generated.h"
+#include "Object.h"
+#include "ColorChangeable.generated.h"
 
-UCLASS()
-class PINBLANK_API APushCylinder : public AActor, public IFlipperActionable, public IColorChangeable
+UINTERFACE()
+class PINBLANK_API UColorChangeable : public UInterface
 {
-	GENERATED_BODY()
+	GENERATED_UINTERFACE_BODY()
+};
 
-	const int BALL_IMPULSE = 1000;
+class PINBLANK_API IColorChangeable
+{
+	GENERATED_IINTERFACE_BODY()
 
-	APushCylinder();
-	virtual void BeginPlay() override;
-	virtual void PostInitializeComponents() override;
+	UMaterialInstanceDynamic* dynamicMaterialInstance;
 
-	// Flipper action impl
-	virtual void Interact(ABall* ball) override;
-	virtual void StopInteract(ABall* ball) override;
+	virtual UStaticMeshComponent* GetColoredMesh() PURE_VIRTUAL(IColorChangeable::GetColoredMesh, return nullptr;);
+	virtual const FName GetMaterialParameterColorName() const PURE_VIRTUAL(IColorChangeable::GetMaterialParameterColorName, return TEXT("ParamColor"););
 
-	// Color change impl
-	virtual UStaticMeshComponent* GetColoredMesh() override;
-	virtual const FName GetMaterialParameterColorName() const override;
-public:
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* boxMesh;
+	void InitializeDynamicMaterialInstance(UObject* obj);
+
+	public:
+		void ChangeColor(FLinearColor color);
 };

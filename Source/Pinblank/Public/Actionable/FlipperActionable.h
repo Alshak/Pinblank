@@ -2,26 +2,21 @@
 
 #pragma once
 
-#include "GameFramework/Actor.h"
 #include "Ball.h"
 #include "FlipperActionable.generated.h"
 
-UCLASS()
-class PINBLANK_API AFlipperActionable : public AActor
+UINTERFACE()
+class PINBLANK_API UFlipperActionable : public UInterface
 {
-	GENERATED_BODY()
+	GENERATED_UINTERFACE_BODY()
+};
 
+class PINBLANK_API IFlipperActionable
+{
+	GENERATED_IINTERFACE_BODY()
+	
 	public:
-		AFlipperActionable();
-		UMaterialInstanceDynamic* dynamicMaterialInstance;
-
-		/// TODO : Separate interfaces
-		// Change color
-		virtual void PostInitializeComponents() override;
-		virtual void ChangeColor(FLinearColor color);
-		virtual UStaticMeshComponent* GetColoredMesh() PURE_VIRTUAL(AFlipperActionable::GetColoredMesh, return nullptr;);
-
 		// Interact with user
-		virtual void Interact(ABall* ball) PURE_VIRTUAL(AFlipperActionable::Interact, ;);
-		virtual void StopInteract(ABall* ball) PURE_VIRTUAL(AFlipperActionable::StopInteract, ;);
+		virtual void Interact(ABall* ball) PURE_VIRTUAL(IFlipperActionable::Interact, ;);
+		virtual void StopInteract(ABall* ball) PURE_VIRTUAL(IFlipperActionable::StopInteract, ;);
 };

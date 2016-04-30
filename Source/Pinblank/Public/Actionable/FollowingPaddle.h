@@ -2,18 +2,14 @@
 
 #pragma once
 
-#include "Actionable/FlipperActionable.h"
+#include "GameFramework/Actor.h"
 #include "FollowingPaddle.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PINBLANK_API AFollowingPaddle : public AFlipperActionable
+class PINBLANK_API AFollowingPaddle: public AActor
 {
 	GENERATED_BODY()
-	
-	
-	
-	
 };

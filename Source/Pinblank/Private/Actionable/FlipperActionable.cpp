@@ -3,25 +3,8 @@
 #include "Pinblank.h"
 #include "FlipperActionable.h"
 
-AFlipperActionable::AFlipperActionable()
+UFlipperActionable::UFlipperActionable(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 
 }
-
-
-// Set dynamic material instance to allow color change
-void AFlipperActionable::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	if (GetColoredMesh() != nullptr && GetColoredMesh()->GetMaterial(0)) {
-		dynamicMaterialInstance = UMaterialInstanceDynamic::Create(GetColoredMesh()->GetMaterial(0), this);
-		GetColoredMesh()->SetMaterial(0, dynamicMaterialInstance);
-		ChangeColor(FLinearColor(1, 0, 0));
-	}
-}
-
-void AFlipperActionable::ChangeColor(FLinearColor color)
-{
-	dynamicMaterialInstance->SetVectorParameterValue(TEXT("EnemyColor"), color);
-}
-

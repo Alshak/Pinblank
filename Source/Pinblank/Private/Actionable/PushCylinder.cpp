@@ -40,6 +40,14 @@ void APushCylinder::BeginPlay()
 	Super::BeginPlay();
 }
 
+void APushCylinder::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	IColorChangeable::InitializeDynamicMaterialInstance(this);
+	ChangeColor(FLinearColor(1, 0, 0));
+}
+
 // // Add some impulse on player interact
 void APushCylinder::Interact(ABall* ball) {
 	ball->GetSphereMeshComponent()->AddImpulse(FVector(0.f,0.f,BALL_IMPULSE));
@@ -51,4 +59,9 @@ void APushCylinder::StopInteract(ABall* ball) {
 UStaticMeshComponent* APushCylinder::GetColoredMesh()
 {
 	return boxMesh;
+}
+
+const FName APushCylinder::GetMaterialParameterColorName() const
+{
+	return TEXT("ParamColor");
 }

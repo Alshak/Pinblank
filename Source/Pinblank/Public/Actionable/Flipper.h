@@ -4,35 +4,36 @@
 
 #include "GameFramework/Actor.h"
 #include "FlipperActionable.h"
+#include "ColorChangeable.h"
 #include "Flipper.generated.h"
 
-UCLASS()
-class PINBLANK_API AFlipper : public AFlipperActionable
+UCLASS(Blueprintable)
+class PINBLANK_API AFlipper : public AActor, public IFlipperActionable, public IColorChangeable
 {
 	GENERATED_BODY()
 
 	FVector initialPosition;
 	FRotator flipperDestination;
-
 	float currentYaw;
-	// Small optimization
 	bool hasNewDestination = false;
-
 	const int BALL_IMPULSE = 1500;
 	const int CAPSULE_RADIUS = 25;
 	const int CAPSULE_HALF_HEIGHT = 44;
 	bool bIsInteracted;
-public:
+
 	AFlipper();
-	void BeginPlay() override;
-	void Tick( float DeltaSeconds ) override;
-	void PostInitializeComponents() override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void PostInitializeComponents() override;
 
 	// Flipper action impl
-	void Interact(ABall* ball) override;
-	void StopInteract(ABall* ball) override;
-	virtual UStaticMeshComponent* GetColoredMesh() override;
+	virtual void Interact(ABall* ball) override;
+	virtual void StopInteract(ABall* ball) override;
 
+	// Color change impl
+	virtual UStaticMeshComponent* GetColoredMesh() override;
+	virtual const FName GetMaterialParameterColorName() const override;
+public:
 	UFUNCTION()
 	void OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit) ;
 

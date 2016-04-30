@@ -2,9 +2,9 @@
 
 #include "Pinblank.h"
 #include "FlipperActionable.h"
+#include "ColorChangeable.h"
 #include "Ball.h"
 
-// Sets default values
 ABall::ABall()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -36,7 +36,7 @@ ABall::ABall()
 	sphereCollider->OnComponentEndOverlap.AddDynamic(this, &ABall::OnEndOverlap);
 
 	// Physical material to remove bouciness
-	const ConstructorHelpers::FObjectFinder<UPhysicalMaterial> physMat(TEXT("/Game/PhysicalMaterials/Ball"));
+	const ConstructorHelpers::FObjectFinder<UPhysicalMaterial> physMat(TEXT("/Game/PhysicalMaterials/PM_Ball"));
 	if (GEngine) {
 		sphereMesh->SetPhysMaterialOverride(physMat.Object);
 	}
@@ -51,7 +51,6 @@ void ABall::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 	InputComponent->BindAction("FlipperAction", IE_Released, this, &ABall::FlipperStopAction);
 }
 
-// Called when the game starts or when spawned
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
@@ -70,29 +69,34 @@ void ABall::PostInitializeComponents()
 
 }
 
-// Interact with FlipperActionable
 void ABall::FlipperAction()
 {
 	TArray<AActor *> flippers;
 	sphereCollider->GetOverlappingActors(flippers);
 	for (auto flip : flippers)
 	{
-		AFlipperActionable* actionableActor = Cast<AFlipperActionable>(flip);
+		// Interact with FlipperActionable
+		IFlipperActionable* actionableActor = Cast<IFlipperActionable>(flip);
 		if (actionableActor)
 		{
 			actionableActor->Interact(this);
 			bIsInteracted = true;
-			actionableActor->ChangeColor(FLinearColor(0, 1, 0));
+			// Change color of interactable objects
+			IColorChangeable* colorChangeableActor = Cast<IColorChangeable>(actionableActor);
+			if (colorChangeableActor)
+			{
+				colorChangeableActor->ChangeColor(FLinearColor(0, 1, 0));
+			}
 		}
 	}
 }
 
-// Stop interacting with FlipperActionable
 void ABall::FlipperStopAction()
 {
 	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
-		AFlipperActionable* actionableActor = Cast<AFlipperActionable>(*It);
+		// Stop interacting with FlipperActionable
+		IFlipperActionable* actionableActor = Cast<IFlipperActionable>(*It);
 		if (actionableActor)
 		{
 			bIsInteracted = false;
@@ -108,7 +112,7 @@ UStaticMeshComponent* ABall::GetSphereMeshComponent()
 
 void ABall::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AFlipperActionable* actionableActor = Cast<AFlipperActionable>(OtherActor);
+	IFlipperActionable* actionableActor = Cast<IFlipperActionable>(OtherActor);
 	if (actionableActor)
 	{
 		// If button already press, interact with the new component
@@ -116,16 +120,24 @@ void ABall::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* 
 			FlipperAction();
 		}
 		// Change color of interactable objects
-		actionableActor->ChangeColor(FLinearColor(0, 1, 0));
+		IColorChangeable* colorChangeableActor = Cast<IColorChangeable>(actionableActor);
+		if (colorChangeableActor)
+		{
+			colorChangeableActor->ChangeColor(FLinearColor(0, 1, 0));
+		}
 	}
 }
 
 void ABall::OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	AFlipperActionable* actionableActor = Cast<AFlipperActionable>(OtherActor);
+	// Change color of interactable objects
+	IFlipperActionable* actionableActor = Cast<IFlipperActionable>(OtherActor);
 	if (actionableActor)
 	{
-		// Stop changing color of interactable objects
-		actionableActor->ChangeColor(FLinearColor(1, 0, 0));
+		IColorChangeable* colorChangeableActor = Cast<IColorChangeable>(actionableActor);
+		if (colorChangeableActor)
+		{
+			colorChangeableActor->ChangeColor(FLinearColor(1, 0, 0));
+		}
 	}
 }

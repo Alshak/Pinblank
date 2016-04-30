@@ -39,7 +39,6 @@ AExpeditor::AExpeditor()
 	}
 }
 
-// Called when the game starts or when spawned
 void AExpeditor::BeginPlay()
 {
 	Super::BeginPlay();
@@ -50,21 +49,8 @@ void AExpeditor::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	// Assign dynamic material to allow color change
-	if (GetColoredMesh() != nullptr && GetColoredMesh()->GetMaterial(0)) {
-		dynamicMaterialInstance = UMaterialInstanceDynamic::Create(GetColoredMesh()->GetMaterial(0), this);
-		GetColoredMesh()->SetMaterial(0, dynamicMaterialInstance);
-	}
-}
-
-UStaticMeshComponent* AExpeditor::GetColoredMesh()
-{
-	return cubeMesh;
-}
-
-void AExpeditor::ChangeColor(FLinearColor color)
-{
-	dynamicMaterialInstance->SetVectorParameterValue(TEXT("Wall Color"), color);
+	IColorChangeable::InitializeDynamicMaterialInstance(this);
+	ChangeColor(FLinearColor(1, 0, 0));
 }
 
 void AExpeditor::OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
@@ -91,4 +77,14 @@ void AExpeditor::OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector Norma
 			}
 		}
 	}
+}
+
+UStaticMeshComponent* AExpeditor::GetColoredMesh()
+{
+	return cubeMesh;
+}
+
+const FName AExpeditor::GetMaterialParameterColorName() const
+{
+	return TEXT("ParamColor");
 }

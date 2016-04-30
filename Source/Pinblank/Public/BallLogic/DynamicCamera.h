@@ -12,13 +12,12 @@ class PINBLANK_API ADynamicCamera : public AActor
 
 	FVector ballLastPosition;
 	bool bBallHasLeft;
-
 	const int CAMERA_DISTANCE = -80;
-public:	
+
 	ADynamicCamera();
-	void BeginPlay() override;
-	void Tick( float DeltaSeconds ) override;
-	
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+public:
 	UFUNCTION()
 	void OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
