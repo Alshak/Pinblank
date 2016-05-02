@@ -2,40 +2,23 @@
 
 #pragma once
 
-#include "GameFramework/Pawn.h"
-#include "Ball.generated.h"
+#include "GameFramework/Actor.h"
+#include "Teleport.generated.h"
 
 UCLASS()
-class PINBLANK_API ABall : public APawn
+class PINBLANK_API ATeleport : public AActor
 {
 	GENERATED_BODY()
 
-	bool bIsInteracted = false;
-	const int SPHERE_RADIUS = 32;
-
-	USphereComponent* sphereCollider;
-	UStaticMeshComponent* sphereMesh;
-
-	ABall();
-	void FlipperAction();
-	void FlipperStopAction();
-
+	ATeleport();
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void Tick( float DeltaSeconds ) override;
 	virtual void PostInitializeComponents() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-
-	void ChangeActionableColor(AActor* Actor, FLinearColor color);
 
 	UFUNCTION()
 		void OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-		void OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 public:
-	const UStaticMeshComponent* GetSphereMeshComponent() const;
-	void AddSphereImpulse(class AActor* OtherActor, FVector force);
-
 	UPROPERTY(EditAnywhere)
-		int maxSpeed = 800;
+	AActor* actorDestination;
+
 };

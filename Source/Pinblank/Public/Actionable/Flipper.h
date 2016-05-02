@@ -18,7 +18,7 @@ class PINBLANK_API AFlipper : public AActor, public IFlipperActionable, public I
 	bool hasNewDestination = false;
 	const int BALL_IMPULSE = 1500;
 	const int CAPSULE_RADIUS = 25;
-	const int CAPSULE_HALF_HEIGHT = 44;
+	const int CAPSULE_HALF_HEIGHT = 45;
 	bool bIsInteracted;
 
 	AFlipper();
@@ -33,10 +33,8 @@ class PINBLANK_API AFlipper : public AActor, public IFlipperActionable, public I
 	// Color change impl
 	virtual UStaticMeshComponent* GetColoredMesh() override;
 	virtual const FName GetMaterialParameterColorName() const override;
-public:
-	UFUNCTION()
-	void OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit) ;
 
+public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* flipperMesh;
 
@@ -48,4 +46,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	int rotationInterpSpeed = 250;
+
+	UFUNCTION()
+		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

@@ -3,13 +3,47 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "ColorChangeable.h"
+#include "FlipperActionable.h"
 #include "FollowingPaddle.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PINBLANK_API AFollowingPaddle: public AActor
+class PINBLANK_API AFollowingPaddle: public AActor, public IFlipperActionable, public IColorChangeable
 {
 	GENERATED_BODY()
+
+	const int CAPSULE_RADIUS = 40;
+	const int CAPSULE_HALF_HEIGHT =  70;
+	const int BALL_IMPULSE = 2500;
+	const float OFFSET_DEVIATION_Y = 150;
+	const float OFFSET_DEVIATION_TOLERANCE = 0.02f;
+
+	AFollowingPaddle();
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void PostInitializeComponents() override;
+
+	// Flipper action impl
+	virtual void Interact(ABall* ball) override;
+	virtual void StopInteract(ABall* ball) override;
+
+	// Color change impl
+	virtual UStaticMeshComponent* GetColoredMesh() override;
+	virtual const FName GetMaterialParameterColorName() const override;
+
+	ABall* playerBall;
+	bool bIsInteracted = false;
+	int paddleSpeed = 700;
+
+	UFUNCTION()
+		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+public:
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* boxMesh;
+
+	UPROPERTY(EditAnywhere)
+		float offsetFromBall = 50;
 };

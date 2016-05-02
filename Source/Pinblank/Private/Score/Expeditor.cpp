@@ -24,7 +24,7 @@ AExpeditor::AExpeditor()
 	cubeMesh->SetWorldScale3D(FVector(0.2f));
 	cubeMesh->SetNotifyRigidBodyCollision(true);
 	cubeMesh->SetMobility(EComponentMobility::Static);
-	this->OnActorHit.AddDynamic(this, &AExpeditor::OnHitActor);
+	cubeMesh->OnComponentHit.AddDynamic(this, &AExpeditor::OnHitActor);
 
 	// Particle System
 	particleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particles"));
@@ -53,14 +53,14 @@ void AExpeditor::PostInitializeComponents()
 	ChangeColor(FLinearColor(1, 0, 0));
 }
 
-void AExpeditor::OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	ABall* ball = Cast<ABall>(OtherActor);
 	if (ball)
 	{
 		// Add impulse to the ball
 		FVector normal = Hit.Normal;
-		ball->GetSphereMeshComponent()->AddImpulse(normal*-BALL_IMPULSE);
+		ball->AddSphereImpulse(this, normal*-BALL_IMPULSE);
 
 		// Activate particle system
 		if (particleSystem && particleSystem->Template)

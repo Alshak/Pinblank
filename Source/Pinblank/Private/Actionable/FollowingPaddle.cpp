@@ -3,3 +3,90 @@
 #include "Pinblank.h"
 #include "FollowingPaddle.h"
 
+AFollowingPaddle::AFollowingPaddle()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	// Flipper mesh
+	boxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxMesh"));
+	RootComponent = boxMesh;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> paddleVisualAsset(TEXT("/Game/Meshes/Shape_NarrowCapsule.Shape_NarrowCapsule"));
+	if (paddleVisualAsset.Succeeded())
+	{
+		boxMesh->SetStaticMesh(paddleVisualAsset.Object);
+		static ConstructorHelpers::FObjectFinder<UMaterial> MaterialResource(TEXT("/Game/Materials/M_MasterEnemy.M_MasterEnemy"));
+		if (MaterialResource.Succeeded())
+		{
+			boxMesh->SetMaterial(0, MaterialResource.Object);
+		}
+	}
+	boxMesh->SetWorldRotation(FRotator(0, 0, 90));
+	boxMesh->SetRelativeScale3D(FVector(0.4,0.4,1));
+	boxMesh->SetEnableGravity(false);
+	boxMesh->SetSimulatePhysics(false);
+	boxMesh->SetNotifyRigidBodyCollision(true);
+	boxMesh->OnComponentHit.AddDynamic(this, &AFollowingPaddle::OnHitActor);
+
+	// Collider to detect ball position
+	UBoxComponent* boxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
+	boxCollider->AttachTo(RootComponent);
+	boxCollider->SetRelativeScale3D(FVector(5,50,25));
+	boxCollider->SetEnableGravity(false);
+
+	playerBall = nullptr;
+}
+
+void AFollowingPaddle::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+void AFollowingPaddle::Tick(float DeltaSeconds)
+{
+	if (bIsInteracted) {
+		FVector underTheBall = FVector(boxMesh->GetComponentLocation().X, playerBall->GetSphereMeshComponent()->GetComponentLocation().Y - offsetFromBall, boxMesh->GetComponentLocation().Z);
+		boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), underTheBall, DeltaSeconds, paddleSpeed));
+	}
+}
+void AFollowingPaddle::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	IColorChangeable::InitializeDynamicMaterialInstance(this);
+}
+
+void AFollowingPaddle::Interact(ABall* ball) {
+	if (playerBall == nullptr)
+	{
+		playerBall = ball;
+	}
+	bIsInteracted = true;
+}
+
+void AFollowingPaddle::StopInteract(ABall* ball) {
+	bIsInteracted = false;
+}
+
+UStaticMeshComponent* AFollowingPaddle::GetColoredMesh()
+{
+	return boxMesh;
+}
+
+const FName AFollowingPaddle::GetMaterialParameterColorName() const
+{
+	return TEXT("ParamColor");
+}
+
+void AFollowingPaddle::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	// Add some impulse on ball hit
+	ABall* ball = Cast<ABall>(OtherActor);
+	if (ball)
+	{
+		FVector offset = FVector::ZeroVector;
+		if (FMath::Abs(Hit.ImpactNormal.Y) < OFFSET_DEVIATION_TOLERANCE) {
+			offset = FVector(0, OFFSET_DEVIATION_Y, 0);
+		}
+		ball->AddSphereImpulse(this, Hit.ImpactNormal * -BALL_IMPULSE + offset);
+	}
+}

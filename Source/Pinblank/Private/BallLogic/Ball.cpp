@@ -24,6 +24,7 @@ ABall::ABall()
 	sphereMesh->SetWorldScale3D(FVector(0.25f));
 	sphereMesh->SetSimulatePhysics(true);
 	sphereMesh->SetEnableGravity(true);
+	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::YZPlane);
 
 	// Sphere collider to detect FlipperActionable
 	sphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
@@ -54,13 +55,20 @@ void ABall::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
+	//Change color of actionables already overlapping
+	TArray<AActor *> flippers;
+	sphereCollider->GetOverlappingActors(flippers);
+	for (auto flip : flippers)
+	{
+		ChangeActionableColor(flip, FLinearColor(0, 1, 0));
+	}
 }
 
 void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// Limit ball velocity to size 900
-	sphereMesh->SetPhysicsLinearVelocity(sphereMesh->GetComponentVelocity().GetClampedToMaxSize(900));
+	//Set max speed
+	sphereMesh->SetPhysicsLinearVelocity(sphereMesh->GetComponentVelocity().GetClampedToMaxSize(maxSpeed));
 }
 
 void ABall::PostInitializeComponents()
@@ -75,18 +83,12 @@ void ABall::FlipperAction()
 	sphereCollider->GetOverlappingActors(flippers);
 	for (auto flip : flippers)
 	{
-		// Interact with FlipperActionable
+		// Interact with Actionable
 		IFlipperActionable* actionableActor = Cast<IFlipperActionable>(flip);
 		if (actionableActor)
 		{
 			actionableActor->Interact(this);
 			bIsInteracted = true;
-			// Change color of interactable objects
-			IColorChangeable* colorChangeableActor = Cast<IColorChangeable>(actionableActor);
-			if (colorChangeableActor)
-			{
-				colorChangeableActor->ChangeColor(FLinearColor(0, 1, 0));
-			}
 		}
 	}
 }
@@ -95,7 +97,7 @@ void ABall::FlipperStopAction()
 {
 	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
-		// Stop interacting with FlipperActionable
+		// Stop interacting with Actionable
 		IFlipperActionable* actionableActor = Cast<IFlipperActionable>(*It);
 		if (actionableActor)
 		{
@@ -105,39 +107,36 @@ void ABall::FlipperStopAction()
 	}
 }
 
-UStaticMeshComponent* ABall::GetSphereMeshComponent()
+const UStaticMeshComponent* ABall::GetSphereMeshComponent() const
 {
 	return sphereMesh;
 }
 
 void ABall::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	IFlipperActionable* actionableActor = Cast<IFlipperActionable>(OtherActor);
-	if (actionableActor)
-	{
-		// If button already press, interact with the new component
-		if (bIsInteracted) {
-			FlipperAction();
-		}
-		// Change color of interactable objects
-		IColorChangeable* colorChangeableActor = Cast<IColorChangeable>(actionableActor);
-		if (colorChangeableActor)
-		{
-			colorChangeableActor->ChangeColor(FLinearColor(0, 1, 0));
-		}
-	}
+	ChangeActionableColor(OtherActor, FLinearColor(0, 1, 0));
 }
 
 void ABall::OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	// Change color of interactable objects
-	IFlipperActionable* actionableActor = Cast<IFlipperActionable>(OtherActor);
+	// If ball use physics (e.g. add impulse), it emits this event. So we verify if the collider and the overlap each other before continuing.
+	if(!sphereCollider->IsOverlappingActor(OtherActor))
+		ChangeActionableColor(OtherActor, FLinearColor(1, 0, 0));
+}
+
+void ABall::AddSphereImpulse(class AActor* OtherActor, FVector force)
+{
+	sphereMesh->AddImpulse(force);
+}
+
+void ABall::ChangeActionableColor(AActor* Actor, FLinearColor color) {
+	IFlipperActionable* actionableActor = Cast<IFlipperActionable>(Actor);
 	if (actionableActor)
 	{
 		IColorChangeable* colorChangeableActor = Cast<IColorChangeable>(actionableActor);
 		if (colorChangeableActor)
 		{
-			colorChangeableActor->ChangeColor(FLinearColor(1, 0, 0));
+			colorChangeableActor->ChangeColor(color);
 		}
 	}
 }

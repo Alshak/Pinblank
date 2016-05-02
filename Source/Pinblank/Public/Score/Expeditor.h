@@ -22,9 +22,10 @@ class PINBLANK_API AExpeditor : public AActor, public IColorChangeable
 	// Color change impl
 	virtual UStaticMeshComponent* GetColoredMesh() override;
 	virtual const FName GetMaterialParameterColorName() const override;
-public:	
+
 	UFUNCTION()
-	void OnHitActor(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+public:	
 	
 	UPROPERTY(EditAnywhere)
 		int NbLives = 1;

@@ -13,7 +13,7 @@ ADynamicCamera::ADynamicCamera()
 	// Collider which always include the ball
 	UBoxComponent* boxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 	RootComponent = boxCollider;
-	boxCollider->SetWorldScale3D(FVector(6));
+	boxCollider->SetWorldScale3D(FVector(4,8,8));
 	boxCollider->bGenerateOverlapEvents = true;
 	boxCollider->OnComponentEndOverlap.AddDynamic(this, &ADynamicCamera::OnEndOverlap);
 

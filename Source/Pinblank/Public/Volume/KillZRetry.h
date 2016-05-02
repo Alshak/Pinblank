@@ -10,9 +10,18 @@ class PINBLANK_API AKillZRetry : public AActor
 {
 	GENERATED_BODY()
 
+
 	AKillZRetry();
 	virtual void BeginPlay() override;
-public:	
+	void LoadLevel();
+
 	UFUNCTION()
 	void OnBeginOverlap(AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+public:
+	UPROPERTY(EditAnywhere)
+		FName mapName = TEXT("FirstMap");
+
+	UPROPERTY(EditAnywhere)
+		float loadDelay = 0.1f;
 };
