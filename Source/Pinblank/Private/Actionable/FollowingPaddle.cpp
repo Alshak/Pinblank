@@ -44,7 +44,6 @@ void AFollowingPaddle::Tick(float DeltaSeconds)
 {
 	if (boxMesh) {
 		if (isFirstActionHolded) {
-			//		FVector underTheBall = FVector(boxMesh->GetComponentLocation().X, playerBall->GetSphereMeshComponent()->GetComponentLocation().Y - offsetFromBall, boxMesh->GetComponentLocation().Z);
 			boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), firstInteractionDestination, DeltaSeconds, paddleSpeed));
 		}
 		else if (isSecondActionHolded) {
@@ -102,9 +101,6 @@ void AFollowingPaddle::OnHitActor(AActor* OtherActor, UPrimitiveComponent* Other
 	if (ball && NormalImpulse.Z > 0)
 	{
 		FVector offset = FVector::ZeroVector;
-/*		if (FMath::Abs(Hit.ImpactNormal.Y) < OFFSET_DEVIATION_TOLERANCE) {
-			offset = FVector(0, OFFSET_DEVIATION_Y, 0);
-		}*/
 		FVector localImpact = this->GetTransform().InverseTransformPosition(Hit.ImpactPoint);
 		if (localImpact.Z > 50)
 		{
@@ -114,6 +110,5 @@ void AFollowingPaddle::OnHitActor(AActor* OtherActor, UPrimitiveComponent* Other
 			offset = FVector(0, -OFFSET_DEVIATION_Y, 0);
 		}
 		ball->AddSphereImpulse(this, FVector(0, 0, BALL_IMPULSE) + offset);
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *offset.ToString());
 	}
 }

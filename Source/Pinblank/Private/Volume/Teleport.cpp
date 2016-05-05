@@ -5,10 +5,8 @@
 #include "Teleport.h"
 
 
-// Sets default values
 ATeleport::ATeleport()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	USphereComponent* sphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	sphereCollider->AttachTo(GetRootComponent());
@@ -17,23 +15,9 @@ ATeleport::ATeleport()
 	sphereCollider->OnComponentBeginOverlap.AddDynamic(this, &ATeleport::OnBeginOverlap);
 }
 
-// Called when the game starts or when spawned
 void ATeleport::BeginPlay()
 {
 	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ATeleport::Tick( float DeltaTime )
-{
-	Super::Tick( DeltaTime );
-
-}
-
-void ATeleport::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
 }
 
 void ATeleport::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
