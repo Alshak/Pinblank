@@ -17,6 +17,8 @@ class PINBLANK_API IFlipperActionable
 	
 	public:
 		// Interact with user
-		virtual void Interact(ABall* ball) PURE_VIRTUAL(IFlipperActionable::Interact, ;);
-		virtual void StopInteract(ABall* ball) PURE_VIRTUAL(IFlipperActionable::StopInteract, ;);
+		virtual void StartFirstInteraction(ABall* ball) PURE_VIRTUAL(IFlipperActionable::FirstInteraction, ;);
+		virtual void StopFirstInteraction(ABall* ball) PURE_VIRTUAL(IFlipperActionable::StopFirstInteraction, ;);
+		virtual void StartSecondInteraction(ABall* ball) PURE_VIRTUAL(IFlipperActionable::SecondInteraction, ;);
+		virtual void StopSecondInteraction(ABall* ball) PURE_VIRTUAL(IFlipperActionable::StopSecondInteraction, ;);
 };

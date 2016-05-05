@@ -24,4 +24,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float loadDelay = 0.1f;
+
+	UPROPERTY(EditAnywhere)
+		bool autoActivate = false;
 };

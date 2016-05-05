@@ -20,7 +20,7 @@ AFollowingPaddle::AFollowingPaddle()
 		}
 	}
 	boxMesh->SetWorldRotation(FRotator(0, 0, 90));
-	boxMesh->SetRelativeScale3D(FVector(0.4,0.4,1));
+	boxMesh->SetWorldScale3D(FVector(0.16,0.16,0.3));
 	boxMesh->SetEnableGravity(false);
 	boxMesh->SetSimulatePhysics(false);
 	boxMesh->SetNotifyRigidBodyCollision(true);
@@ -29,10 +29,9 @@ AFollowingPaddle::AFollowingPaddle()
 	// Collider to detect ball position
 	UBoxComponent* boxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 	boxCollider->AttachTo(RootComponent);
-	boxCollider->SetRelativeScale3D(FVector(5,50,25));
+	boxCollider->SetRelativeScale3D(FVector(5,25,25));
 	boxCollider->SetEnableGravity(false);
 
-	playerBall = nullptr;
 }
 
 void AFollowingPaddle::BeginPlay()
@@ -43,9 +42,14 @@ void AFollowingPaddle::BeginPlay()
 
 void AFollowingPaddle::Tick(float DeltaSeconds)
 {
-	if (bIsInteracted) {
-		FVector underTheBall = FVector(boxMesh->GetComponentLocation().X, playerBall->GetSphereMeshComponent()->GetComponentLocation().Y - offsetFromBall, boxMesh->GetComponentLocation().Z);
-		boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), underTheBall, DeltaSeconds, paddleSpeed));
+	if (boxMesh) {
+		if (isFirstActionHolded) {
+			//		FVector underTheBall = FVector(boxMesh->GetComponentLocation().X, playerBall->GetSphereMeshComponent()->GetComponentLocation().Y - offsetFromBall, boxMesh->GetComponentLocation().Z);
+			boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), firstInteractionDestination, DeltaSeconds, paddleSpeed));
+		}
+		else if (isSecondActionHolded) {
+			boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), secondInteractionDestination, DeltaSeconds, paddleSpeed));
+		}
 	}
 }
 void AFollowingPaddle::PostInitializeComponents()
@@ -53,20 +57,34 @@ void AFollowingPaddle::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	IColorChangeable::InitializeDynamicMaterialInstance(this);
-}
-
-void AFollowingPaddle::Interact(ABall* ball) {
-	if (playerBall == nullptr)
-	{
-		playerBall = ball;
+	if (firstInteractionDestinationActor) {
+		firstInteractionDestination = firstInteractionDestinationActor->GetActorLocation();
 	}
-	bIsInteracted = true;
+	else {
+		firstInteractionDestination = boxMesh->GetComponentLocation();
+	}
+	if(secondInteractionDestinationActor)
+		secondInteractionDestination = secondInteractionDestinationActor->GetActorLocation();
 }
 
-void AFollowingPaddle::StopInteract(ABall* ball) {
-	bIsInteracted = false;
+void AFollowingPaddle::StartFirstInteraction(ABall* ball) {
+
+	isFirstActionHolded = true;
 }
 
+void AFollowingPaddle::StopFirstInteraction(ABall* ball) {
+	isFirstActionHolded = false;
+}
+
+void AFollowingPaddle::StartSecondInteraction(ABall* ball)
+{
+	isSecondActionHolded = true;
+}
+
+void AFollowingPaddle::StopSecondInteraction(ABall* ball)
+{
+	isSecondActionHolded = false;
+}
 UStaticMeshComponent* AFollowingPaddle::GetColoredMesh()
 {
 	return boxMesh;
@@ -81,12 +99,21 @@ void AFollowingPaddle::OnHitActor(AActor* OtherActor, UPrimitiveComponent* Other
 {
 	// Add some impulse on ball hit
 	ABall* ball = Cast<ABall>(OtherActor);
-	if (ball)
+	if (ball && NormalImpulse.Z > 0)
 	{
 		FVector offset = FVector::ZeroVector;
-		if (FMath::Abs(Hit.ImpactNormal.Y) < OFFSET_DEVIATION_TOLERANCE) {
+/*		if (FMath::Abs(Hit.ImpactNormal.Y) < OFFSET_DEVIATION_TOLERANCE) {
+			offset = FVector(0, OFFSET_DEVIATION_Y, 0);
+		}*/
+		FVector localImpact = this->GetTransform().InverseTransformPosition(Hit.ImpactPoint);
+		if (localImpact.Z > 50)
+		{
 			offset = FVector(0, OFFSET_DEVIATION_Y, 0);
 		}
-		ball->AddSphereImpulse(this, Hit.ImpactNormal * -BALL_IMPULSE + offset);
+		else if(localImpact.Z < 50){
+			offset = FVector(0, -OFFSET_DEVIATION_Y, 0);
+		}
+		ball->AddSphereImpulse(this, FVector(0, 0, BALL_IMPULSE) + offset);
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *offset.ToString());
 	}
 }

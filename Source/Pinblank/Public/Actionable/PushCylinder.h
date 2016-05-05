@@ -12,15 +12,17 @@ class PINBLANK_API APushCylinder : public AActor, public IFlipperActionable, pub
 {
 	GENERATED_BODY()
 
-	const int BALL_IMPULSE = 1000;
+	const int BALL_IMPULSE = 120;
 
 	APushCylinder();
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
 
 	// Flipper action impl
-	virtual void Interact(ABall* ball) override;
-	virtual void StopInteract(ABall* ball) override;
+	virtual void StartFirstInteraction(ABall* ball) override;
+	virtual void StopFirstInteraction(ABall* ball) override;
+	virtual void StartSecondInteraction(ABall* ball) override;
+	virtual void StopSecondInteraction(ABall* ball) override;
 
 	// Color change impl
 	virtual UStaticMeshComponent* GetColoredMesh() override;

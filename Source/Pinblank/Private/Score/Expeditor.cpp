@@ -21,22 +21,14 @@ AExpeditor::AExpeditor()
 			cubeMesh->SetMaterial(0, materialResource.Object);
 		}
 	}
-	cubeMesh->SetWorldScale3D(FVector(0.2f));
+	cubeMesh->SetWorldScale3D(FVector(0.06f));
 	cubeMesh->SetNotifyRigidBodyCollision(true);
 	cubeMesh->SetMobility(EComponentMobility::Static);
 	cubeMesh->OnComponentHit.AddDynamic(this, &AExpeditor::OnHitActor);
 
 	// Particle System
-	particleSystem = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particles"));
-	particleSystem->AttachTo(cubeMesh);
-	particleSystem->SetRelativeRotation(FRotator(90, 0, 0));
-	particleSystem->SetRelativeScale3D(FVector(5));
-	particleSystem->bAutoActivate = false;
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> particleAsset(TEXT("/Game/Particles/PFX_Param_Explosion.PFX_Param_Explosion"));
-	if (particleAsset.Succeeded())
-	{
-		particleSystem->SetTemplate(particleAsset.Object);
-	}
+	particleSystem = particleAsset.Object;
 }
 
 void AExpeditor::BeginPlay()
@@ -59,14 +51,19 @@ void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 	if (ball)
 	{
 		// Add impulse to the ball
-		FVector normal = Hit.Normal;
-		ball->AddSphereImpulse(this, normal*-BALL_IMPULSE);
+		if(NormalImpulse.Z > 0)
+			ball->AddSphereImpulse(this, Hit.Normal*-BALL_IMPULSE);
 
 		// Activate particle system
-		if (particleSystem && particleSystem->Template)
-		{
-			particleSystem->ToggleActive();
-		}
+		UGameplayStatics::SpawnEmitterAttached(
+			particleSystem,
+			cubeMesh,
+			"",
+			FVector(0, 0, 0),
+			FRotator(90, 0,0),
+			EAttachLocation::KeepRelativeOffset,
+			true //Auto delete on completion
+			);
 
 		// Decrease lives. If life = 0, actor is destroyed. If life < 0, actor is invulnerable.
 		if (NbLives > 0)

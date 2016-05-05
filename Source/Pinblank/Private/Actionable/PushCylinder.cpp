@@ -10,7 +10,7 @@ APushCylinder::APushCylinder()
 	UCapsuleComponent* capsuleCollider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	capsuleCollider->SetCapsuleSize(5, 44);
 	RootComponent = capsuleCollider;
-	capsuleCollider->SetWorldScale3D(FVector(4));
+	capsuleCollider->SetWorldScale3D(FVector(0.08));
 	capsuleCollider->bGenerateOverlapEvents = true;
 
 	// Background plane mesh
@@ -49,11 +49,21 @@ void APushCylinder::PostInitializeComponents()
 }
 
 // // Add some impulse on player interact
-void APushCylinder::Interact(ABall* ball) {
+void APushCylinder::StartFirstInteraction(ABall* ball) {
 	ball->AddSphereImpulse(this, FVector(0.f,0.f,BALL_IMPULSE));
 }
 
-void APushCylinder::StopInteract(ABall* ball) {
+void APushCylinder::StopFirstInteraction(ABall* ball) {
+}
+
+void APushCylinder::StartSecondInteraction(ABall* ball)
+{
+	StartFirstInteraction(ball);
+}
+
+void APushCylinder::StopSecondInteraction(ABall* ball)
+{
+	StopFirstInteraction(ball);
 }
 
 UStaticMeshComponent* APushCylinder::GetColoredMesh()

@@ -21,7 +21,7 @@ ABall::ABall()
 			sphereMesh->SetMaterial(0, materialResource.Object);
 		}
 	}
-	sphereMesh->SetWorldScale3D(FVector(0.25f));
+	sphereMesh->SetWorldScale3D(FVector(0.08f));
 	sphereMesh->SetSimulatePhysics(true);
 	sphereMesh->SetEnableGravity(true);
 	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::YZPlane);
@@ -48,8 +48,10 @@ void ABall::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 
-	InputComponent->BindAction("FlipperAction", IE_Pressed, this, &ABall::FlipperAction);
-	InputComponent->BindAction("FlipperAction", IE_Released, this, &ABall::FlipperStopAction);
+	InputComponent->BindAction("FlipperFirstAction", IE_Pressed, this, &ABall::FlipperStartFirstAction);
+	InputComponent->BindAction("FlipperFirstAction", IE_Released, this, &ABall::FlipperStopFirstAction);
+	InputComponent->BindAction("FlipperSecondAction", IE_Pressed, this, &ABall::FlipperStartSecondAction);
+	InputComponent->BindAction("FlipperSecondAction", IE_Released, this, &ABall::FlipperStopSecondAction);
 }
 
 void ABall::BeginPlay()
@@ -77,7 +79,7 @@ void ABall::PostInitializeComponents()
 
 }
 
-void ABall::FlipperAction()
+void ABall::FlipperStartFirstAction()
 {
 	TArray<AActor *> flippers;
 	sphereCollider->GetOverlappingActors(flippers);
@@ -87,13 +89,13 @@ void ABall::FlipperAction()
 		IFlipperActionable* actionableActor = Cast<IFlipperActionable>(flip);
 		if (actionableActor)
 		{
-			actionableActor->Interact(this);
+			actionableActor->StartFirstInteraction(this);
 			bIsInteracted = true;
 		}
 	}
 }
 
-void ABall::FlipperStopAction()
+void ABall::FlipperStopFirstAction()
 {
 	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
@@ -102,7 +104,37 @@ void ABall::FlipperStopAction()
 		if (actionableActor)
 		{
 			bIsInteracted = false;
-			actionableActor->StopInteract(this);
+			actionableActor->StopFirstInteraction(this);
+		}
+	}
+}
+
+void ABall::FlipperStartSecondAction()
+{
+	TArray<AActor *> flippers;
+	sphereCollider->GetOverlappingActors(flippers);
+	for (auto flip : flippers)
+	{
+		// Interact with Actionable
+		IFlipperActionable* actionableActor = Cast<IFlipperActionable>(flip);
+		if (actionableActor)
+		{
+			actionableActor->StartSecondInteraction(this);
+			bIsInteracted = true;
+		}
+	}
+}
+
+void ABall::FlipperStopSecondAction()
+{
+	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	{
+		// Stop interacting with Actionable
+		IFlipperActionable* actionableActor = Cast<IFlipperActionable>(*It);
+		if (actionableActor)
+		{
+			bIsInteracted = false;
+			actionableActor->StopSecondInteraction(this);
 		}
 	}
 }
@@ -126,7 +158,10 @@ void ABall::OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* Ot
 
 void ABall::AddSphereImpulse(class AActor* OtherActor, FVector force)
 {
-	sphereMesh->AddImpulse(force);
+	if (sphereMesh->ComponentVelocity.Z <= 0)
+	{
+		sphereMesh->AddImpulse(force);
+	}
 }
 
 void ABall::ChangeActionableColor(AActor* Actor, FLinearColor color) {

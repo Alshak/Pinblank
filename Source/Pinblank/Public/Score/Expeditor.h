@@ -11,8 +11,8 @@ class PINBLANK_API AExpeditor : public AActor, public IColorChangeable
 {
 	GENERATED_BODY()
 
-		const int BALL_IMPULSE = 1000;
-	UParticleSystemComponent* particleSystem;
+		const int BALL_IMPULSE = 50;
+	UParticleSystem* particleSystem;
 	UMaterialInstanceDynamic* dynamicMaterialInstance;
 
 	AExpeditor();

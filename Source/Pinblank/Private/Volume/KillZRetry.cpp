@@ -19,7 +19,11 @@ AKillZRetry::AKillZRetry()
 void AKillZRetry::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (autoActivate)
+	{
+		FTimerHandle UnusedHandle;
+		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AKillZRetry::LoadLevel, loadDelay, true);
+	}
 }
 
 void AKillZRetry::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

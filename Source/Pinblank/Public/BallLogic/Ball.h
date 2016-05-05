@@ -17,8 +17,10 @@ class PINBLANK_API ABall : public APawn
 	UStaticMeshComponent* sphereMesh;
 
 	ABall();
-	void FlipperAction();
-	void FlipperStopAction();
+	void FlipperStartFirstAction();
+	void FlipperStopFirstAction();
+	void FlipperStartSecondAction();
+	void FlipperStopSecondAction();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -37,5 +39,5 @@ public:
 	void AddSphereImpulse(class AActor* OtherActor, FVector force);
 
 	UPROPERTY(EditAnywhere)
-		int maxSpeed = 800;
+		int maxSpeed = 600;
 };

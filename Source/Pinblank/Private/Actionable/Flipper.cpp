@@ -20,7 +20,7 @@ AFlipper::AFlipper()
 			flipperMesh->SetMaterial(0, MaterialResource.Object);
 		}
 	}
-	flipperMesh->SetWorldScale3D(FVector(0.08f));
+	flipperMesh->SetWorldScale3D(FVector(0.026f));
 	flipperMesh->SetWorldRotation(FRotator(0, 0, bottomAngle));
 	flipperMesh->SetEnableGravity(false);
 	flipperMesh->SetSimulatePhysics(false);
@@ -69,7 +69,7 @@ void AFlipper::Tick( float DeltaTime )
 	}
 }
 
-void AFlipper::Interact(ABall* ball)
+void AFlipper::StartFirstInteraction(ABall* ball)
 {
 	bIsInteracted = true;
 	hasNewDestination = true;
@@ -77,12 +77,22 @@ void AFlipper::Interact(ABall* ball)
 	flipperDestination = FRotator(0, currentYaw, topAngle);
 }
 
-void AFlipper::StopInteract(ABall* ball)
+void AFlipper::StopFirstInteraction(ABall* ball)
 {
 	bIsInteracted = false;
 	hasNewDestination = true;
 	// Set the bottom position as current destination
 	flipperDestination = FRotator(0, currentYaw, bottomAngle);
+}
+
+void AFlipper::StartSecondInteraction(ABall* ball)
+{
+	StartFirstInteraction(ball);
+}
+
+void AFlipper::StopSecondInteraction(ABall* ball)
+{
+	StopFirstInteraction(ball);
 }
 
 UStaticMeshComponent* AFlipper::GetColoredMesh()
@@ -99,7 +109,7 @@ void AFlipper::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 {
 	// Add some impulse on ball hit
 	ABall* ball = Cast<ABall>(OtherActor);
-	if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2))
+	if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2) && NormalImpulse.Z > 0)
 	{
 		ball->AddSphereImpulse(this, FVector(0, 0, BALL_IMPULSE));
 	}

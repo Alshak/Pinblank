@@ -16,7 +16,7 @@ class PINBLANK_API AFlipper : public AActor, public IFlipperActionable, public I
 	FRotator flipperDestination;
 	float currentYaw;
 	bool hasNewDestination = false;
-	const int BALL_IMPULSE = 1500;
+	const int BALL_IMPULSE = 60;
 	const int CAPSULE_RADIUS = 25;
 	const int CAPSULE_HALF_HEIGHT = 45;
 	bool bIsInteracted;
@@ -27,8 +27,10 @@ class PINBLANK_API AFlipper : public AActor, public IFlipperActionable, public I
 	virtual void PostInitializeComponents() override;
 
 	// Flipper action impl
-	virtual void Interact(ABall* ball) override;
-	virtual void StopInteract(ABall* ball) override;
+	virtual void StartFirstInteraction(ABall* ball) override;
+	virtual void StopFirstInteraction(ABall* ball) override;
+	virtual void StartSecondInteraction(ABall* ball) override;
+	virtual void StopSecondInteraction(ABall* ball) override;
 
 	// Color change impl
 	virtual UStaticMeshComponent* GetColoredMesh() override;
@@ -45,7 +47,7 @@ public:
 	int bottomAngle = 120;
 
 	UPROPERTY(EditAnywhere)
-	int rotationInterpSpeed = 250;
+	int rotationInterpSpeed = 200;
 
 	UFUNCTION()
 		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

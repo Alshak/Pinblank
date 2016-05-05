@@ -17,9 +17,9 @@ class PINBLANK_API AFollowingPaddle: public AActor, public IFlipperActionable, p
 
 	const int CAPSULE_RADIUS = 40;
 	const int CAPSULE_HALF_HEIGHT =  70;
-	const int BALL_IMPULSE = 2500;
-	const float OFFSET_DEVIATION_Y = 150;
-	const float OFFSET_DEVIATION_TOLERANCE = 0.02f;
+	const int BALL_IMPULSE = 80;
+	const float OFFSET_DEVIATION_Y = 30;
+	const float OFFSET_DEVIATION_TOLERANCE = 10;
 
 	AFollowingPaddle();
 	virtual void BeginPlay() override;
@@ -27,23 +27,33 @@ class PINBLANK_API AFollowingPaddle: public AActor, public IFlipperActionable, p
 	virtual void PostInitializeComponents() override;
 
 	// Flipper action impl
-	virtual void Interact(ABall* ball) override;
-	virtual void StopInteract(ABall* ball) override;
+	virtual void StartFirstInteraction(ABall* ball) override;
+	virtual void StopFirstInteraction(ABall* ball) override;
+	virtual void StartSecondInteraction(ABall* ball) override;
+	virtual void StopSecondInteraction(ABall* ball) override;
 
 	// Color change impl
 	virtual UStaticMeshComponent* GetColoredMesh() override;
 	virtual const FName GetMaterialParameterColorName() const override;
 
-	ABall* playerBall;
-	bool bIsInteracted = false;
-	int paddleSpeed = 700;
-
+	ABall* playerBall = nullptr;
+	bool isFirstActionHolded = false;
+	bool isSecondActionHolded = false;
+	int paddleSpeed = 300;
+	FVector firstInteractionDestination = FVector::ZeroVector;
+	FVector secondInteractionDestination = FVector::ZeroVector;
 	UFUNCTION()
 		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 public:
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* boxMesh;
+		UStaticMeshComponent* boxMesh = nullptr;
 
 	UPROPERTY(EditAnywhere)
-		float offsetFromBall = 50;
+		float offsetFromBall = 20;
+
+	UPROPERTY(EditAnywhere)
+		AActor* firstInteractionDestinationActor = nullptr;
+
+	UPROPERTY(EditAnywhere)
+		AActor* secondInteractionDestinationActor = nullptr;
 };
