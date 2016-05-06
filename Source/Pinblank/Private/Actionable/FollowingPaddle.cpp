@@ -43,11 +43,11 @@ void AFollowingPaddle::BeginPlay()
 void AFollowingPaddle::Tick(float DeltaSeconds)
 {
 	if (boxMesh) {
-		if (isFirstActionHolded) {
-			boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), firstInteractionDestination, DeltaSeconds, paddleSpeed));
-		}
-		else if (isSecondActionHolded) {
+		if (isSecondActionHolded) {
 			boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), secondInteractionDestination, DeltaSeconds, paddleSpeed));
+		}
+		else if (isFirstActionHolded) {
+			boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), firstInteractionDestination, DeltaSeconds, paddleSpeed));
 		}
 	}
 }

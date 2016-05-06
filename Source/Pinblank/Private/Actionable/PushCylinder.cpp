@@ -58,12 +58,10 @@ void APushCylinder::StopFirstInteraction(ABall* ball) {
 
 void APushCylinder::StartSecondInteraction(ABall* ball)
 {
-	StartFirstInteraction(ball);
 }
 
 void APushCylinder::StopSecondInteraction(ABall* ball)
 {
-	StopFirstInteraction(ball);
 }
 
 UStaticMeshComponent* APushCylinder::GetColoredMesh()

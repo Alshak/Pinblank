@@ -87,12 +87,10 @@ void AFlipper::StopFirstInteraction(ABall* ball)
 
 void AFlipper::StartSecondInteraction(ABall* ball)
 {
-	StartFirstInteraction(ball);
 }
 
 void AFlipper::StopSecondInteraction(ABall* ball)
 {
-	StopFirstInteraction(ball);
 }
 
 UStaticMeshComponent* AFlipper::GetColoredMesh()
