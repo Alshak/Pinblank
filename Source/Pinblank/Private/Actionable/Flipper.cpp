@@ -21,7 +21,7 @@ AFlipper::AFlipper()
 		}
 	}
 	flipperMesh->SetWorldScale3D(FVector(0.026f));
-	flipperMesh->SetWorldRotation(FRotator(0, 0, bottomAngle));
+	this->SetActorRotation(FRotator(0, 0, 0));
 	flipperMesh->SetEnableGravity(false);
 	flipperMesh->SetSimulatePhysics(false);
 	flipperMesh->SetNotifyRigidBodyCollision(true);
@@ -32,7 +32,7 @@ AFlipper::AFlipper()
 	capsuleCollider->AttachTo(RootComponent);
 	capsuleCollider->SetCapsuleSize(CAPSULE_RADIUS, CAPSULE_HALF_HEIGHT);
 	capsuleCollider->SetRelativeScale3D(FVector(60));
-	capsuleCollider->SetRelativeRotation(FRotator(0, 0, -bottomAngle));
+	capsuleCollider->SetRelativeRotation(FRotator(0, 0, 90));
 	capsuleCollider->SetEnableGravity(false);
 }
 
@@ -44,8 +44,8 @@ void AFlipper::PostInitializeComponents()
 	ChangeColor(FLinearColor(1, 0, 0));
 
 	// Register the current Z rotation to allow rotation on this axis in the editor
-	currentYaw = flipperMesh->GetComponentRotation().Yaw;
-	flipperDestination = FRotator(0, currentYaw, bottomAngle);
+	currentYaw = flipperMesh->GetComponentRotation().Pitch;
+	flipperDestination = FRotator(currentYaw, 0, bottomAngle);
 }
 
 
@@ -61,6 +61,7 @@ void AFlipper::Tick( float DeltaTime )
 	// Rotate the flipper
 	if (hasNewDestination)
 	{
+		flipperDestination = FRotator(flipperMesh->GetComponentRotation().Pitch, rotDestination, flipperMesh->GetComponentRotation().Roll);
 		flipperMesh->SetWorldRotation(FMath::RInterpConstantTo(flipperMesh->GetComponentRotation(), flipperDestination, DeltaTime, rotationInterpSpeed));
 		if (flipperDestination.Equals(flipperMesh->GetComponentRotation(), 0.1))
 		{
@@ -73,16 +74,14 @@ void AFlipper::StartFirstInteraction(ABall* ball)
 {
 	bIsInteracted = true;
 	hasNewDestination = true;
-	// Set the top position as current destination
-	flipperDestination = FRotator(0, currentYaw, topAngle);
+	rotDestination = topAngle;
 }
 
 void AFlipper::StopFirstInteraction(ABall* ball)
 {
 	bIsInteracted = false;
 	hasNewDestination = true;
-	// Set the bottom position as current destination
-	flipperDestination = FRotator(0, currentYaw, bottomAngle);
+	rotDestination = bottomAngle;
 }
 
 void AFlipper::StartSecondInteraction(ABall* ball)
@@ -107,8 +106,9 @@ void AFlipper::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 {
 	// Add some impulse on ball hit
 	ABall* ball = Cast<ABall>(OtherActor);
-	if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2) && NormalImpulse.Z > 0)
+	if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2) && NormalImpulse.Y < 0)
 	{
-		ball->AddSphereImpulse(this, FVector(0, 0, BALL_IMPULSE));
+		UE_LOG(LogTemp, Warning, TEXT("Hit"));
+		ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE,0));
 	}
 }

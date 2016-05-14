@@ -50,7 +50,7 @@ void APushCylinder::PostInitializeComponents()
 
 // // Add some impulse on player interact
 void APushCylinder::StartFirstInteraction(ABall* ball) {
-	ball->AddSphereImpulse(this, FVector(0.f,0.f,BALL_IMPULSE));
+	ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE,0));
 }
 
 void APushCylinder::StopFirstInteraction(ABall* ball) {

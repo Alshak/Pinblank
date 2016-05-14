@@ -24,7 +24,7 @@ ABall::ABall()
 	sphereMesh->SetWorldScale3D(FVector(0.08f));
 	sphereMesh->SetSimulatePhysics(true);
 	sphereMesh->SetEnableGravity(true);
-	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::YZPlane);
+	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::XYPlane);
 
 	// Sphere collider to detect FlipperActionable
 	sphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
@@ -71,6 +71,7 @@ void ABall::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	//Set max speed
 	sphereMesh->SetPhysicsLinearVelocity(sphereMesh->GetComponentVelocity().GetClampedToMaxSize(maxSpeed));
+	sphereMesh->AddForce(FVector(0, 80, 0));
 }
 
 void ABall::PostInitializeComponents()

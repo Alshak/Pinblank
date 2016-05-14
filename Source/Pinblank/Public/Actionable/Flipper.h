@@ -14,9 +14,10 @@ class PINBLANK_API AFlipper : public AActor, public IFlipperActionable, public I
 
 	FVector initialPosition;
 	FRotator flipperDestination;
+	int rotDestination;
 	float currentYaw;
 	bool hasNewDestination = false;
-	const int BALL_IMPULSE = 60;
+	const int BALL_IMPULSE = 70;
 	const int CAPSULE_RADIUS = 25;
 	const int CAPSULE_HALF_HEIGHT = 45;
 	bool bIsInteracted;
@@ -41,10 +42,10 @@ public:
 	UStaticMeshComponent* flipperMesh;
 
 	UPROPERTY(EditAnywhere)
-	int topAngle = 60;
+	int topAngle = -50;
 
 	UPROPERTY(EditAnywhere)
-	int bottomAngle = 120;
+	int bottomAngle = 50;
 
 	UPROPERTY(EditAnywhere)
 	int rotationInterpSpeed = 200;
