@@ -106,9 +106,8 @@ void AFlipper::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 {
 	// Add some impulse on ball hit
 	ABall* ball = Cast<ABall>(OtherActor);
-	if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2) && NormalImpulse.Y < 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit"));
-		ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE,0));
+
+	if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2)) {
+		ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE, 0));
 	}
 }

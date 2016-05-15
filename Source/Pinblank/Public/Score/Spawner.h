@@ -3,42 +3,23 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
-#include "ColorChangeable.h"
-#include "Expeditor.generated.h"
+#include "Spawner.generated.h"
 
 UCLASS()
-class PINBLANK_API AExpeditor : public AActor, public IColorChangeable
+class PINBLANK_API ASpawner : public AActor
 {
 	GENERATED_BODY()
 
-	const int BALL_IMPULSE = 50;
-	bool gravityY = false;
-	int speed = 80;
-	bool isUpImpulse = false;
-	UParticleSystem* particleSystem;
-	UMaterialInstanceDynamic* dynamicMaterialInstance;
+	void SpawnExpeditor();
 
-	AExpeditor();
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
-	virtual void PostInitializeComponents() override;
-
-	// Color change impl
-	virtual UStaticMeshComponent* GetColoredMesh() override;
-	virtual const FName GetMaterialParameterColorName() const override;
-
-	UFUNCTION()
-		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 public:	
+	// Sets default values for this actor's properties
+	ASpawner();
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 	
-	void EnableYGravity(int speed, bool pIsUpImpulse = true);
+	// Called every frame
+	virtual void Tick( float DeltaSeconds ) override;
 
-	UPROPERTY(EditAnywhere)
-		int NbLives = 1;
-
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* sphereMesh;
-
-	UPROPERTY(EditAnywhere)
-		FLinearColor meshColor = FLinearColor(1, 0, 0);
 };

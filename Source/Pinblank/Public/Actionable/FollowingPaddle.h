@@ -17,7 +17,6 @@ class PINBLANK_API AFollowingPaddle: public AActor, public IFlipperActionable, p
 
 	const int CAPSULE_RADIUS = 40;
 	const int CAPSULE_HALF_HEIGHT =  70;
-	const int BALL_IMPULSE = 80;
 	const float OFFSET_DEVIATION_Y = 30;
 	const float OFFSET_DEVIATION_TOLERANCE = 10;
 
@@ -39,7 +38,6 @@ class PINBLANK_API AFollowingPaddle: public AActor, public IFlipperActionable, p
 	ABall* playerBall = nullptr;
 	bool isFirstActionHolded = false;
 	bool isSecondActionHolded = false;
-	int paddleSpeed = 300;
 	FVector firstInteractionDestination = FVector::ZeroVector;
 	FVector secondInteractionDestination = FVector::ZeroVector;
 	UFUNCTION()
@@ -50,6 +48,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float offsetFromBall = 20;
+
+	UPROPERTY(EditAnywhere)
+		int ballImpulse = 60;
+
+	UPROPERTY(EditAnywhere)
+		int paddleSpeed = 100;
 
 	UPROPERTY(EditAnywhere)
 		AActor* firstInteractionDestinationActor = nullptr;

@@ -6,25 +6,25 @@
 
 AExpeditor::AExpeditor()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// Cube mesh
-	cubeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("cubeMesh"));
-	RootComponent = cubeMesh;
+	sphereMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("cubeMesh"));
+	RootComponent = sphereMesh;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> cubeVisualAsset(TEXT("/Game/Meshes/Shape_Sphere.Shape_Sphere"));
 	if (cubeVisualAsset.Succeeded())
 	{
-		cubeMesh->SetStaticMesh(cubeVisualAsset.Object);
+		sphereMesh->SetStaticMesh(cubeVisualAsset.Object);
 		static ConstructorHelpers::FObjectFinder<UMaterial> materialResource(TEXT("/Game/Materials/M_WallShader_Master.M_WallShader_Master"));
 		if (materialResource.Succeeded())
 		{
-			cubeMesh->SetMaterial(0, materialResource.Object);
+			sphereMesh->SetMaterial(0, materialResource.Object);
 		}
 	}
-	cubeMesh->SetWorldScale3D(FVector(0.06f));
-	cubeMesh->SetNotifyRigidBodyCollision(true);
-	cubeMesh->SetMobility(EComponentMobility::Static);
-	cubeMesh->OnComponentHit.AddDynamic(this, &AExpeditor::OnHitActor);
+	sphereMesh->SetWorldScale3D(FVector(0.08f));
+	sphereMesh->SetNotifyRigidBodyCollision(true);
+	sphereMesh->SetMobility(EComponentMobility::Static);
+	sphereMesh->OnComponentHit.AddDynamic(this, &AExpeditor::OnHitActor);
 
 	// Particle System
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> particleAsset(TEXT("/Game/Particles/PFX_Param_Explosion.PFX_Param_Explosion"));
@@ -35,6 +35,25 @@ void AExpeditor::BeginPlay()
 {
 	Super::BeginPlay();
 	ChangeColor(meshColor);	
+}
+
+void AExpeditor::EnableYGravity(int pSpeed, bool pIsUpImpulse)
+{
+	sphereMesh->SetMobility(EComponentMobility::Movable);
+	sphereMesh->SetSimulatePhysics(true);
+	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::XYPlane);
+	gravityY = true;
+	speed = pSpeed;
+	isUpImpulse = pIsUpImpulse;
+}
+
+void AExpeditor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (gravityY) 
+	{
+		sphereMesh->AddForce(FVector(0, speed, 0));
+	}
 }
 
 void AExpeditor::PostInitializeComponents()
@@ -51,13 +70,19 @@ void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 	if (ball)
 	{
 		// Add impulse to the ball
-		if(NormalImpulse.Z > 0)
+		if (isUpImpulse) 
+		{
+			ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE, 0));
+		}
+		else if (NormalImpulse.Z > 0) 
+		{
 			ball->AddSphereImpulse(this, Hit.Normal*-BALL_IMPULSE);
+		}
 
 		// Activate particle system
 		UGameplayStatics::SpawnEmitterAttached(
 			particleSystem,
-			cubeMesh,
+			sphereMesh,
 			"",
 			FVector(0, 0, 0),
 			FRotator(90, 0,0),
@@ -78,8 +103,9 @@ void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 
 UStaticMeshComponent* AExpeditor::GetColoredMesh()
 {
-	return cubeMesh;
+	return sphereMesh;
 }
+
 
 const FName AExpeditor::GetMaterialParameterColorName() const
 {

@@ -29,7 +29,7 @@ AFollowingPaddle::AFollowingPaddle()
 	// Collider to detect ball position
 	UBoxComponent* boxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 	boxCollider->AttachTo(RootComponent);
-	boxCollider->SetRelativeScale3D(FVector(5,25,25));
+	boxCollider->SetRelativeScale3D(FVector(25,25,5));
 	boxCollider->SetEnableGravity(false);
 
 }
@@ -43,10 +43,10 @@ void AFollowingPaddle::BeginPlay()
 void AFollowingPaddle::Tick(float DeltaSeconds)
 {
 	if (boxMesh) {
-		if (isSecondActionHolded) {
+		if (isFirstActionHolded) {
 			boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), secondInteractionDestination, DeltaSeconds, paddleSpeed));
 		}
-		else if (isFirstActionHolded) {
+		else {
 			boxMesh->SetWorldLocation(FMath::VInterpConstantTo(boxMesh->GetComponentLocation(), firstInteractionDestination, DeltaSeconds, paddleSpeed));
 		}
 	}
@@ -98,17 +98,17 @@ void AFollowingPaddle::OnHitActor(AActor* OtherActor, UPrimitiveComponent* Other
 {
 	// Add some impulse on ball hit
 	ABall* ball = Cast<ABall>(OtherActor);
-	if (ball && NormalImpulse.Z > 0)
+	if (ball && NormalImpulse.Y < 0)
 	{
 		FVector offset = FVector::ZeroVector;
 		FVector localImpact = this->GetTransform().InverseTransformPosition(Hit.ImpactPoint);
 		if (localImpact.Z > 50)
 		{
-			offset = FVector(0, OFFSET_DEVIATION_Y, 0);
+			offset = FVector(-OFFSET_DEVIATION_Y,0 , 0);
 		}
 		else if(localImpact.Z < 50){
-			offset = FVector(0, -OFFSET_DEVIATION_Y, 0);
+			offset = FVector(OFFSET_DEVIATION_Y, 0, 0);
 		}
-		ball->AddSphereImpulse(this, FVector(0, 0, BALL_IMPULSE) + offset);
+		ball->AddSphereImpulse(this, FVector(0, -ballImpulse, 0) + offset);
 	}
 }

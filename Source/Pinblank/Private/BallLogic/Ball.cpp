@@ -36,7 +36,7 @@ ABall::ABall()
 	sphereCollider->OnComponentBeginOverlap.AddDynamic(this, &ABall::OnBeginOverlap);
 	sphereCollider->OnComponentEndOverlap.AddDynamic(this, &ABall::OnEndOverlap);
 
-	// Physical material to remove bouciness
+	// Physical material to remove bounciness
 	const ConstructorHelpers::FObjectFinder<UPhysicalMaterial> physMat(TEXT("/Game/PhysicalMaterials/PM_Ball"));
 	if (GEngine) {
 		sphereMesh->SetPhysMaterialOverride(physMat.Object);
