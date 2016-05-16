@@ -22,9 +22,6 @@ ABall::ABall()
 		}
 	}
 	sphereMesh->SetWorldScale3D(FVector(0.08f));
-	sphereMesh->SetSimulatePhysics(true);
-	sphereMesh->SetEnableGravity(true);
-	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::XYPlane);
 
 	// Sphere collider to detect FlipperActionable
 	sphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
@@ -41,7 +38,7 @@ ABall::ABall()
 	if (GEngine) {
 		sphereMesh->SetPhysMaterialOverride(physMat.Object);
 	}
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
+//	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
 void ABall::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -69,9 +66,18 @@ void ABall::BeginPlay()
 void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//Set max speed
-	sphereMesh->SetPhysicsLinearVelocity(sphereMesh->GetComponentVelocity().GetClampedToMaxSize(maxSpeed));
-	sphereMesh->AddForce(FVector(0, 80, 0));
+	if (sphereMesh->IsSimulatingPhysics()) {
+		//Set max speed
+		sphereMesh->SetPhysicsLinearVelocity(sphereMesh->GetComponentVelocity().GetClampedToMaxSize(maxSpeed));
+		sphereMesh->AddForce(FVector(0, 80, 0));
+	}
+}
+
+void ABall::ActivatePhysics()
+{
+	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::XYPlane);
+	sphereMesh->SetEnableGravity(true);
+	sphereMesh->SetSimulatePhysics(true);
 }
 
 void ABall::PostInitializeComponents()

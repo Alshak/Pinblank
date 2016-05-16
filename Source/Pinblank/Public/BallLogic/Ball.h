@@ -40,4 +40,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		int maxSpeed = 600;
+
+	UFUNCTION(BlueprintCallable, Category = "Init")
+		void ActivatePhysics();
 };
