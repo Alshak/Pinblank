@@ -18,7 +18,7 @@ void ASpawner::BeginPlay()
 	Super::BeginPlay();
 	FTimerHandle uniqueHandle;
 	FTimerDelegate spawnDelegate = FTimerDelegate::CreateUObject(this, &ASpawner::SpawnExpeditor);
-	GetWorldTimerManager().SetTimer(uniqueHandle, spawnDelegate, 3.f, true);
+	GetWorldTimerManager().SetTimer(uniqueHandle, spawnDelegate, frequency, true);
 }
 
 void ASpawner::SpawnExpeditor()

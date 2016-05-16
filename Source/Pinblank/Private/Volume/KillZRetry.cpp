@@ -3,6 +3,7 @@
 #include "Pinblank.h"
 #include "KillZRetry.h"
 #include "Ball.h"
+#include "Expeditor.h"
 
 AKillZRetry::AKillZRetry()
 {
@@ -34,6 +35,14 @@ void AKillZRetry::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveCompo
 		//Load level with a delay
 		FTimerHandle UnusedHandle;
 		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AKillZRetry::LoadLevel, loadDelay, true);
+	}
+	else 
+	{
+		AExpeditor* expeditor = Cast<AExpeditor>(OtherActor);
+		if (expeditor)
+		{
+			expeditor->Destroy();
+		}
 	}
 }
 void AKillZRetry::LoadLevel() {

@@ -38,7 +38,6 @@ ABall::ABall()
 	if (GEngine) {
 		sphereMesh->SetPhysMaterialOverride(physMat.Object);
 	}
-//	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
 void ABall::SetupPlayerInputComponent(class UInputComponent* InputComponent)

@@ -85,7 +85,7 @@ void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 			sphereMesh,
 			"",
 			FVector(0, 0, 0),
-			FRotator(90, 0,0),
+			FRotator(0, 0,0),
 			EAttachLocation::KeepRelativeOffset,
 			true //Auto delete on completion
 			);
@@ -94,7 +94,9 @@ void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		if (NbLives > 0)
 		{
 			NbLives--;
-			if (NbLives == 0) {
+			if (NbLives == 0) {	
+				AActor* childActor = RootComponent->GetChildComponent(0)->GetOwner();
+				childActor->Destroy();
 				this->Destroy();
 			}
 		}

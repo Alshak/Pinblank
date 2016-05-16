@@ -13,13 +13,11 @@ class PINBLANK_API ASpawner : public AActor
 	void SpawnExpeditor();
 
 public:	
-	// Sets default values for this actor's properties
 	ASpawner();
-
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
+
+	UPROPERTY(EditAnywhere)
+		float frequency = 3;
 
 };
