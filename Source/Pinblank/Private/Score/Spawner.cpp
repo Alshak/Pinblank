@@ -25,7 +25,7 @@ void ASpawner::SpawnExpeditor()
 {
 	AExpeditor* expeditor = GetWorld()->SpawnActor<AExpeditor>(AExpeditor::StaticClass(),GetActorLocation(),FRotator::ZeroRotator);
 	if (expeditor) {
-		expeditor->EnableYGravity(40);
+		expeditor->EnableYGravity(expeditorSpeed);
 		expeditor->NbLives = 1;
 		expeditor->ChangeColor(FColor::Orange);
 	}

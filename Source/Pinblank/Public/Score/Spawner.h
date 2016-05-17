@@ -20,4 +20,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		float frequency = 3;
 
+	UPROPERTY(EditAnywhere)
+		float expeditorSpeed = 40;
 };
