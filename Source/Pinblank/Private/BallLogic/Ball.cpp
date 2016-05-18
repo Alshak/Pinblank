@@ -38,6 +38,8 @@ ABall::ABall()
 	if (GEngine) {
 		sphereMesh->SetPhysMaterialOverride(physMat.Object);
 	}
+
+	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::XYPlane);
 }
 
 void ABall::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -53,12 +55,18 @@ void ABall::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
+
 	//Change color of actionables already overlapping
 	TArray<AActor *> flippers;
 	sphereCollider->GetOverlappingActors(flippers);
 	for (auto flip : flippers)
 	{
 		ChangeActionableColor(flip, FLinearColor(0, 1, 0));
+	}
+
+	if (isPhysicsActivated)
+	{
+		ActivatePhysics();
 	}
 }
 
@@ -74,7 +82,6 @@ void ABall::Tick(float DeltaTime)
 
 void ABall::ActivatePhysics()
 {
-	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::XYPlane);
 	sphereMesh->SetEnableGravity(true);
 	sphereMesh->SetSimulatePhysics(true);
 }

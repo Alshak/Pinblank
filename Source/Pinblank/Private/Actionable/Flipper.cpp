@@ -108,6 +108,10 @@ void AFlipper::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 	ABall* ball = Cast<ABall>(OtherActor);
 
 	if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2)) {
-		ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE, 0));
+		FVector localImpact = this->GetTransform().InverseTransformPosition(Hit.ImpactPoint);
+		if (localImpact.Y < 80) {
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *localImpact.ToString());
+			ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE, 0));
+		}
 	}
 }

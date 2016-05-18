@@ -18,8 +18,8 @@ class PINBLANK_API AFlipper : public AActor, public IFlipperActionable, public I
 	float currentYaw;
 	bool hasNewDestination = false;
 	const int BALL_IMPULSE = 70;
-	const int CAPSULE_RADIUS = 25;
-	const int CAPSULE_HALF_HEIGHT = 45;
+	const int CAPSULE_RADIUS = 35;
+	const int CAPSULE_HALF_HEIGHT = 55;
 	bool bIsInteracted;
 
 	AFlipper();

@@ -12,7 +12,7 @@ class PINBLANK_API ADynamicCamera : public AActor
 
 	FVector ballLastPosition;
 	bool bBallHasLeft;
-	const int CAMERA_DISTANCE = -250;
+	const int CAMERA_DISTANCE = -300;
 
 	ADynamicCamera();
 	virtual void BeginPlay() override;

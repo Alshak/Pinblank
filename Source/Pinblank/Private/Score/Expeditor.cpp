@@ -74,20 +74,15 @@ void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		{
 			ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE, 0));
 		}
-		else if (NormalImpulse.Z > 0) 
+		else
 		{
 			ball->AddSphereImpulse(this, Hit.Normal*-BALL_IMPULSE);
 		}
 
 		// Activate particle system
-		UGameplayStatics::SpawnEmitterAttached(
-			particleSystem,
-			sphereMesh,
-			"",
-			FVector(0, 0, 0),
-			FRotator(0, 0,0),
-			EAttachLocation::KeepRelativeOffset,
-			true //Auto delete on completion
+		FTransform transf = FTransform(FQuat::Identity, this->GetActorLocation(), this->GetActorScale3D().GetClampedToSize(0.8f,1));
+		UGameplayStatics::SpawnEmitterAtLocation(this->GetWorld(),
+			particleSystem, transf
 			);
 
 		// Decrease lives. If life = 0, actor is destroyed. If life < 0, actor is invulnerable.
@@ -95,8 +90,17 @@ void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		{
 			NbLives--;
 			if (NbLives == 0) {	
-				AActor* childActor = RootComponent->GetChildComponent(0)->GetOwner();
-				childActor->Destroy();
+				TArray<USceneComponent*> childScenes;
+				RootComponent->GetChildrenComponents(true, childScenes);
+				for (auto childScene : childScenes)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(this->GetWorld(),
+						particleSystem,
+						childScene->GetOwner()->GetActorLocation(),
+						FRotator(0, 0, 0)
+						);
+					childScene->GetOwner()->Destroy();
+				}
 				this->Destroy();
 			}
 		}
