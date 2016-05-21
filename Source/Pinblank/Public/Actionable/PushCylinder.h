@@ -12,7 +12,7 @@ class PINBLANK_API APushCylinder : public AActor, public IFlipperActionable, pub
 {
 	GENERATED_BODY()
 
-	const int BALL_IMPULSE = 120;
+	const int BALL_IMPULSE = 100;
 
 	APushCylinder();
 	virtual void BeginPlay() override;

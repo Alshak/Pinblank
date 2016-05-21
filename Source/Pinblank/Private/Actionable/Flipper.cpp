@@ -105,13 +105,14 @@ const FName AFlipper::GetMaterialParameterColorName() const
 void AFlipper::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Add some impulse on ball hit
-	ABall* ball = Cast<ABall>(OtherActor);
+	if (BALL_IMPULSE > 0) {
+		ABall* ball = Cast<ABall>(OtherActor);
 
-	if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2)) {
-		FVector localImpact = this->GetTransform().InverseTransformPosition(Hit.ImpactPoint);
-		if (localImpact.Y < 80) {
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *localImpact.ToString());
-			ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE, 0));
+		if (ball && bIsInteracted && !flipperDestination.Equals(flipperMesh->GetComponentRotation(), 2)) {
+			FVector localImpact = this->GetTransform().InverseTransformPosition(Hit.ImpactPoint);
+			if (localImpact.Y < 80) {
+				ball->AddSphereImpulse(this, FVector(0, -BALL_IMPULSE, 0));
+			}
 		}
 	}
 }

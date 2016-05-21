@@ -97,18 +97,20 @@ const FName AFollowingPaddle::GetMaterialParameterColorName() const
 void AFollowingPaddle::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Add some impulse on ball hit
-	ABall* ball = Cast<ABall>(OtherActor);
-	if (ball && NormalImpulse.Y < 0)
-	{
-		FVector offset = FVector::ZeroVector;
-		FVector localImpact = this->GetTransform().InverseTransformPosition(Hit.ImpactPoint);
-		if (localImpact.Z > 50)
+	if (ballImpulse > 0) {
+		ABall* ball = Cast<ABall>(OtherActor);
+		if (ball)
 		{
-			offset = FVector(-OFFSET_DEVIATION_Y,0 , 0);
+			FVector offset = FVector::ZeroVector;
+			FVector localImpact = this->GetTransform().InverseTransformPosition(Hit.ImpactPoint);
+			if (localImpact.Z > 50)
+			{
+				offset = FVector(-OFFSET_DEVIATION_Y, 0, 0);
+			}
+			else if (localImpact.Z < 50) {
+				offset = FVector(OFFSET_DEVIATION_Y, 0, 0);
+			}
+			ball->AddSphereImpulse(this, FVector(0, -ballImpulse, 0) + offset);
 		}
-		else if(localImpact.Z < 50){
-			offset = FVector(OFFSET_DEVIATION_Y, 0, 0);
-		}
-		ball->AddSphereImpulse(this, FVector(0, -ballImpulse, 0) + offset);
 	}
 }

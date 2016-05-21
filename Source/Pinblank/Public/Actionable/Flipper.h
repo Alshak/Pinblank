@@ -17,7 +17,7 @@ class PINBLANK_API AFlipper : public AActor, public IFlipperActionable, public I
 	int rotDestination;
 	float currentYaw;
 	bool hasNewDestination = false;
-	const int BALL_IMPULSE = 70;
+	const int BALL_IMPULSE = 0;
 	const int CAPSULE_RADIUS = 35;
 	const int CAPSULE_HALF_HEIGHT = 55;
 	bool bIsInteracted;
@@ -48,7 +48,7 @@ public:
 	int bottomAngle = 50;
 
 	UPROPERTY(EditAnywhere)
-	int rotationInterpSpeed = 200;
+	int rotationInterpSpeed = 500;
 
 	UFUNCTION()
 		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

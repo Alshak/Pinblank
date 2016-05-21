@@ -50,10 +50,10 @@ public:
 		float offsetFromBall = 20;
 
 	UPROPERTY(EditAnywhere)
-		int ballImpulse = 60;
+		int ballImpulse = 0;
 
 	UPROPERTY(EditAnywhere)
-		int paddleSpeed = 100;
+		int paddleSpeed = 150;
 
 	UPROPERTY(EditAnywhere)
 		AActor* firstInteractionDestinationActor = nullptr;
