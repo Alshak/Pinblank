@@ -19,5 +19,5 @@ class PINBLANK_API ADynamicCamera : public AActor
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
-		void OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };

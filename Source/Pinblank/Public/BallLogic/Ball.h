@@ -25,18 +25,18 @@ class PINBLANK_API ABall : public APawn
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void PostInitializeComponents() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
 	void ChangeActionableColor(AActor* Actor, FLinearColor color);
 
 	UFUNCTION()
-		void OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 public:
 	const UStaticMeshComponent* GetSphereMeshComponent() const;
-	void AddSphereImpulse(class AActor* OtherActor, FVector force);
+	void AddSphereImpulse(AActor* OtherActor, FVector force);
 
 	UPROPERTY(EditAnywhere)
 		int maxSpeed = 600;

@@ -102,7 +102,7 @@ const FName AFlipper::GetMaterialParameterColorName() const
 	return TEXT("ParamColor");
 }
 
-void AFlipper::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFlipper::OnHitActor(UPrimitiveComponent* ComponentHit, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Add some impulse on ball hit
 	if (BALL_IMPULSE > 0) {

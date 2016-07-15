@@ -41,7 +41,7 @@ class PINBLANK_API AFollowingPaddle: public AActor, public IFlipperActionable, p
 	FVector firstInteractionDestination = FVector::ZeroVector;
 	FVector secondInteractionDestination = FVector::ZeroVector;
 	UFUNCTION()
-		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+		void OnHitActor(UPrimitiveComponent* ComponentHit, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* boxMesh = nullptr;

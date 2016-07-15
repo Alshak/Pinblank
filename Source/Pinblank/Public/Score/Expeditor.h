@@ -28,7 +28,7 @@ class PINBLANK_API AExpeditor : public AActor, public IColorChangeable
 	virtual const FName GetMaterialParameterColorName() const override;
 
 	UFUNCTION()
-		void OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+		void OnHitActor(UPrimitiveComponent* ComponentHit, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 public:	
 	
 	void EnableYGravity(int speed, bool pIsUpImpulse = true);

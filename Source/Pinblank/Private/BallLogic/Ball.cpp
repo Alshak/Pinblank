@@ -42,7 +42,7 @@ ABall::ABall()
 	sphereMesh->BodyInstance.SetDOFLock(EDOFMode::XYPlane);
 }
 
-void ABall::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+void ABall::SetupPlayerInputComponent(UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 
@@ -157,19 +157,19 @@ const UStaticMeshComponent* ABall::GetSphereMeshComponent() const
 	return sphereMesh;
 }
 
-void ABall::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ABall::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ChangeActionableColor(OtherActor, FLinearColor(0, 1, 0));
 }
 
-void ABall::OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ABall::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	// If ball use physics (e.g. add impulse), it emits this event. So we verify if the collider and the overlap each other before continuing.
 	if(!sphereCollider->IsOverlappingActor(OtherActor))
 		ChangeActionableColor(OtherActor, FLinearColor(1, 0, 0));
 }
 
-void ABall::AddSphereImpulse(class AActor* OtherActor, FVector force)
+void ABall::AddSphereImpulse(AActor* OtherActor, FVector force)
 {
 	if (sphereMesh->ComponentVelocity.Z <= 0)
 	{

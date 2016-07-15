@@ -64,7 +64,7 @@ void AExpeditor::PostInitializeComponents()
 	ChangeColor(FLinearColor(1, 0, 0));
 }
 
-void AExpeditor::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AExpeditor::OnHitActor(UPrimitiveComponent* ComponentHit, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	ABall* ball = Cast<ABall>(OtherActor);
 	if (ball)

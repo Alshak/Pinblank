@@ -20,7 +20,7 @@ void ATeleport::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ATeleport::OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ATeleport::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ABall* ball = Cast<ABall>(OtherActor);
 	if (ball)

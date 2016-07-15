@@ -94,7 +94,7 @@ const FName AFollowingPaddle::GetMaterialParameterColorName() const
 	return TEXT("ParamColor");
 }
 
-void AFollowingPaddle::OnHitActor(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFollowingPaddle::OnHitActor(UPrimitiveComponent* ComponentHit, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Add some impulse on ball hit
 	if (ballImpulse > 0) {

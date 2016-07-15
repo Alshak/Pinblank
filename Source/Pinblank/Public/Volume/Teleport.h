@@ -14,7 +14,7 @@ class PINBLANK_API ATeleport : public AActor
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-		void OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 public:
 	UPROPERTY(EditAnywhere)
 	AActor* actorDestination;

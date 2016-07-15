@@ -45,7 +45,7 @@ void ADynamicCamera::Tick( float DeltaTime )
 	}
 }
 
-void ADynamicCamera::OnEndOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ADynamicCamera::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	ABall* ball = Cast<ABall>(OtherActor);
 	if (ball)
